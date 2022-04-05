@@ -2,6 +2,7 @@ import Head from 'next/head'
 import { useState, useRef } from 'react'
 import Answer from '../components/Answer'
 import Button from '../components/Button'
+import Result from '../components/Result'
 import styles from '../styles/Home.module.css'
 
 export default function Home({ results }) {
@@ -12,30 +13,49 @@ export default function Home({ results }) {
   const [subContent, setSubContent] = useState('Can you score 100% ?')
   const [cta, setCta] = useState('BEGIN')
   const selected = useRef()
-  const quizzes = []
+  const [quizzes, setQuizzes] = useState([])
 
   // console.log('results', results)
-  // console.log('i', i)
+  console.log('i', i)
   function handleClick() {
     if(i == results.length - 1) {
       setTitle(results[i].category)
       setContent(results[i].question)
       setSubContent(`${i + 1}/${results.length}`)
       setCta('Get Result')
+      if(selected.current) {
+        selected.current.value == results[i].correct_answer ? 
+        setQuizzes(quizzes, quizzes.push([ results[i].question, results[i].correct_answer, selected.current.value, true, 1]))
+        :
+        setQuizzes( quizzes, quizzes.push([ results[i].question, results[i].correct_answer, selected.current.value, false, 0]))
+      }
       setI(i+1)
     } else if(i == results.length) {
+      let scoreArray = []
+      for(let n=0; n< quizzes.length; n++) {
+        scoreArray.push(quizzes[n][4])
+      }
+      let score = scoreArray.reduce((a,b) => {
+        return a+b
+      }, 0)
+      setTitle(`You Scored ${score}/${results.length}`)
+      setContent('')
       setCta('PLAY AGAIN ?')
       setI(0);
+      setQuizzes([])
     } else {
       setTitle(results[i].category)
       setContent(results[i].question)
       setSubContent(`${i + 1}/${results.length}`)
       setCta('Next')
       if(selected.current) {
-        
-        console.log('selected', selected.current.value)
+        selected.current.value == results[i].correct_answer ? 
+        setQuizzes(quizzes, quizzes.push([ results[i].question, results[i].correct_answer, selected.current.value, true, 1]))
+        :
+        setQuizzes( quizzes, quizzes.push([ results[i].question, results[i].correct_answer, selected.current.value, false, 0]))
       }
       setI(i+1)
+      console.log('quizzes', quizzes)
     }
   }
   
@@ -52,7 +72,11 @@ export default function Home({ results }) {
         <h1>{title}</h1>
         <div className={styles.quiz}>
           <p className={styles.question}>{content}</p>
-          { i === 0 || i === results.length +1 ?
+          { i === results.length +1 ?
+            <Result quizzes={quizzes} />
+            : <></>
+          }
+          { i=== 0 || i === results.length +1 ?
           <></>
           : <Answer key={i} styles={styles} selected={selected} />
           }
