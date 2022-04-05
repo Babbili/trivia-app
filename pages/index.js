@@ -46,7 +46,7 @@ export default function Home({ results }) {
       setCta('PLAY AGAIN ?')
       setI(i+1);
     } else if(i == results.length +1) {
-      console.log('the End')
+      window.location = '/'
     } else {
       setTitle(results[i].category)
       setContent(results[i].question)

@@ -2,11 +2,9 @@ import React from 'react'
 
 function Result({ quizzes }) {
 
-
-
-    console.log('Results quizzes', quizzes)
+    // console.log('Results quizzes', quizzes)
     return(
-        <div>
+        <div className='result'>
             {
                 quizzes.map(quiz => {
                     return(
