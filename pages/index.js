@@ -16,7 +16,9 @@ export default function Home({ results }) {
   const [quizzes, setQuizzes] = useState([])
 
   // console.log('results', results)
-  console.log('i', i)
+  // console.log('i', i)
+  // console.log('quizzes', quizzes)
+
   function handleClick() {
     if(i == results.length - 1) {
       setTitle(results[i].category)
@@ -40,9 +42,11 @@ export default function Home({ results }) {
       }, 0)
       setTitle(`You Scored ${score}/${results.length}`)
       setContent('')
+      setSubContent('')
       setCta('PLAY AGAIN ?')
-      setI(0);
-      setQuizzes([])
+      setI(i+1);
+    } else if(i == results.length +1) {
+      console.log('the End')
     } else {
       setTitle(results[i].category)
       setContent(results[i].question)
@@ -55,7 +59,6 @@ export default function Home({ results }) {
         setQuizzes( quizzes, quizzes.push([ results[i].question, results[i].correct_answer, selected.current.value, false, 0]))
       }
       setI(i+1)
-      console.log('quizzes', quizzes)
     }
   }
   
@@ -72,10 +75,12 @@ export default function Home({ results }) {
         <h1>{title}</h1>
         <div className={styles.quiz}>
           <p className={styles.question}>{content}</p>
-          { i === results.length +1 ?
+          {
+            i== results.length +1 ?
             <Result quizzes={quizzes} />
             : <></>
           }
+          
           { i=== 0 || i === results.length +1 ?
           <></>
           : <Answer key={i} styles={styles} selected={selected} />
